@@ -1,4 +1,4 @@
-# 草稿
+# smart-classroom-subscription
 
 ## 首次启动
 
