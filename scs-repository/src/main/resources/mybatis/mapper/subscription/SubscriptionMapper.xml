@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smart.classroom.subscription.repository.mapper.subscription.SubscriptionMapper">
+
+    <resultMap id="BaseResultMap"
+               extends="com.smart.classroom.subscription.repository.mapper.subscription.SubscriptionBaseMapper.BaseResultMap"
+               type="com.smart.classroom.subscription.repository.orm.subscription.SubscriptionDO">
+    </resultMap>
+
+    <sql id="AllColumns">
+        <include refid="com.smart.classroom.subscription.repository.mapper.subscription.SubscriptionBaseMapper.AllColumns"/>
+    </sql>
+
+
+    <select id="queryByReaderIdAndColumnId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="AllColumns"/>
+        FROM scs_subscription
+        WHERE reader_id = #{readerId} AND column_id = #{columnId}
+        LIMIT 1
+    </select>
+
+</mapper>

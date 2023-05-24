@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smart.classroom.subscription.repository.mapper.subscription.SubscriptionBaseMapper">
+
+    <resultMap id="BaseResultMap" type="com.smart.classroom.subscription.repository.orm.subscription.SubscriptionDO">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="reader_id" jdbcType="BIGINT" property="readerId"/>
+        <result column="column_id" jdbcType="BIGINT" property="columnId"/>
+        <result column="order_id" jdbcType="BIGINT" property="orderId"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+    </resultMap>
+
+    <sql id="AllColumns">
+        id, create_time, update_time, reader_id, column_id, order_id, status
+    </sql>
+
+    <insert id="insert" parameterType="com.smart.classroom.subscription.repository.orm.subscription.SubscriptionDO" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO scs_subscription (
+        create_time, update_time, reader_id, column_id, order_id, status )
+        VALUES (
+
+        
+        #{createTime,jdbcType=TIMESTAMP} ,
+        #{updateTime,jdbcType=TIMESTAMP} ,
+        #{readerId,jdbcType=BIGINT} ,
+        #{columnId,jdbcType=BIGINT} ,
+        #{orderId,jdbcType=BIGINT} ,
+        #{status,jdbcType=VARCHAR}
+        )
+    </insert>
+
+
+    <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+
+        INSERT INTO scs_subscription (
+        create_time, update_time, reader_id, column_id, order_id, status )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.createTime,jdbcType=TIMESTAMP} ,
+            #{item.updateTime,jdbcType=TIMESTAMP} ,
+            #{item.readerId,jdbcType=BIGINT} ,
+            #{item.columnId,jdbcType=BIGINT} ,
+            #{item.orderId,jdbcType=BIGINT} ,
+            #{item.status,jdbcType=VARCHAR} )
+        </foreach>
+    </insert>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+
+        DELETE FROM scs_subscription
+        WHERE id = #{id,jdbcType=BIGINT}
+
+    </delete>
+
+
+    <delete id="deleteByIds" parameterType="java.util.List">
+        DELETE FROM scs_subscription
+        WHERE
+        <choose>
+            <when test="list==null || list.isEmpty()">
+                1 = 0
+            </when>
+            <otherwise>
+                id IN
+                <foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </otherwise>
+        </choose>
+    </delete>
+
+
+    <update id="update" parameterType="com.smart.classroom.subscription.repository.orm.subscription.SubscriptionDO">
+        UPDATE scs_subscription
+        SET
+
+                create_time = #{createTime,jdbcType=TIMESTAMP} ,
+                update_time = current_timestamp() ,
+                reader_id = #{readerId,jdbcType=BIGINT} ,
+                column_id = #{columnId,jdbcType=BIGINT} ,
+                order_id = #{orderId,jdbcType=BIGINT} ,
+                status = #{status,jdbcType=VARCHAR}
+            WHERE id = #{id}
+    </update>
+
+
+    <select id="queryById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="AllColumns"/>
+        FROM scs_subscription
+        WHERE id = #{id,jdbcType=BIGINT}
+    </select>
+
+
+    <select id="queryByIds" parameterType="java.util.List" resultMap="BaseResultMap">
+        SELECT
+        <include refid="AllColumns"/>
+        FROM scs_subscription
+        WHERE
+        <choose>
+            <when test="list==null || list.isEmpty()">
+                1 = 0
+            </when>
+            <otherwise>
+                id IN
+                <foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="page" resultMap="BaseResultMap">
+
+        SELECT
+
+        <include refid="AllColumns"/>
+
+        FROM scs_subscription
+
+        <where>
+            <if test="readerId != null">
+                AND reader_id = #{readerId}
+            </if>
+            <if test="columnId != null">
+                AND column_id = #{columnId}
+            </if>
+            <if test="orderId != null">
+                AND order_id = #{orderId}
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+
+        </where>
+
+        <choose>
+
+            <when test="orderCreateTime != null and orderCreateTime.name() == 'ASC'">
+                ORDER BY create_time ASC
+            </when>
+            <when test="orderCreateTime != null and orderCreateTime.name() == 'DESC'">
+                ORDER BY create_time DESC
+            </when>
+
+
+            <when test="orderUpdateTime != null and orderUpdateTime.name() == 'ASC'">
+                ORDER BY update_time ASC
+            </when>
+            <when test="orderUpdateTime != null and orderUpdateTime.name() == 'DESC'">
+                ORDER BY update_time DESC
+            </when>
+
+            <otherwise></otherwise>
+        </choose>
+
+
+    </select>
+
+
+</mapper>

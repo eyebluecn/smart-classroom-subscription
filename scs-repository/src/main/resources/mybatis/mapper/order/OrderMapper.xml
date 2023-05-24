@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smart.classroom.subscription.repository.mapper.order.OrderMapper">
+
+    <resultMap id="BaseResultMap"
+               extends="com.smart.classroom.subscription.repository.mapper.order.OrderBaseMapper.BaseResultMap"
+               type="com.smart.classroom.subscription.repository.orm.order.OrderDO">
+    </resultMap>
+
+    <sql id="AllColumns">
+        <include refid="com.smart.classroom.subscription.repository.mapper.order.OrderBaseMapper.AllColumns"/>
+    </sql>
+
+
+    <select id="queryByReaderIdAndColumnIdAndStatuses" resultMap="BaseResultMap">
+        SELECT
+        <include refid="AllColumns"/>
+        FROM scs_order
+        WHERE reader_id = #{readerId} AND column_id = #{columnId}
+        <if test="statuses!=null and statuses.size() > 0">
+            AND status IN
+            <foreach collection="statuses" item="item" index="index" open="(" close=")"
+                     separator=",">
+                #{item}
+            </foreach>
+        </if>
+        LIMIT 1000
+    </select>
+
+    <select id="queryByNo" resultMap="BaseResultMap">
+        SELECT
+        <include refid="AllColumns"/>
+        FROM scs_order
+        WHERE no = #{orderNo}
+        LIMIT 1
+    </select>
+
+
+    <update id="updateStatus">
+        UPDATE scs_order
+        SET
+            update_time = current_timestamp() ,
+            status = #{status}
+        WHERE id = #{orderId}
+    </update>
+
+</mapper>
