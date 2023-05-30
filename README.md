@@ -1,5 +1,7 @@
 # smart-classroom-subscription
 
+本项目对应文章[《领域驱动设计DDD｜从入门到代码实践》](https://mp.weixin.qq.com/s/HMLpjcE0UENUTfMK0Z9n8A)
+
 ## 首次启动
 
 ### 安装并启动Nacos
